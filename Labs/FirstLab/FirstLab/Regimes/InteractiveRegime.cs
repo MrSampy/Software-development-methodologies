@@ -1,15 +1,11 @@
 ﻿using FirstLab.Solvers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace FirstLab.Regimes
 {
     public class InteractiveRegime:Regime
     {
-        private double GetCoeff(string coeffName) 
+        protected double GetCoeff(string coeffName) 
         {
             double result;
             while (true) 

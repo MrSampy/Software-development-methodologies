@@ -15,6 +15,7 @@ namespace FirstLab.Regimes
 
         private QuadraticEquationSolver? QuadraticEquationSolver { get; set; }
 
+
         public void PrintSolution() 
         {
             var realCoeffs = GetCoefficients();

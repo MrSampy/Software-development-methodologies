@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using FirstLab.Regimes;
 
-Regime regime = new InteractiveRegime();
+NonInteractiveRegime regime = new NonInteractiveRegime(args);
 regime.PrintSolution();
