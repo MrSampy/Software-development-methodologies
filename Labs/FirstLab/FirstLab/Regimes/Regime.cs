@@ -8,9 +8,12 @@ using System.Threading.Tasks;
 namespace FirstLab.Regimes
 {
     public abstract class Regime
-    {
-        private QuadraticEquationSolver QuadraticEquationSolver { get; set; }
+    {        
         protected abstract Coeffs GetCoefficients();
+
+        protected string[] stringCoeffs = new string[] { "a", "b", "c"};
+
+        private QuadraticEquationSolver? QuadraticEquationSolver { get; set; }
 
         public void PrintSolution() 
         {
@@ -20,12 +23,12 @@ namespace FirstLab.Regimes
         
             var result = QuadraticEquationSolver.Solve();
 
-            Console.WriteLine($"There are {result.Count} roots");
+            Console.WriteLine($"There are {result.Count} root(s)");
             for (int id = 0; id < result.Count; ++id) 
             {
                 Console.WriteLine($"x{id+1} = {result[id]}");
             }
-
+            Console.ReadLine();
         }
 
     }
