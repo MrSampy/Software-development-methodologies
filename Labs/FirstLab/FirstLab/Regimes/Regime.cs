@@ -29,6 +29,7 @@ namespace FirstLab.Regimes
             {
                 Console.WriteLine($"x{id+1} = {result[id]}");
             }
+            Console.Write("Press any key to continue...");
             Console.ReadLine();
         }
 

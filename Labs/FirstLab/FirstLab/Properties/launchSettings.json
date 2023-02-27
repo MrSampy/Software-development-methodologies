@@ -1,8 +1,7 @@
 {
   "profiles": {
     "FirstLab": {
-      "commandName": "Project",
-      "commandLineArgs": "test.txt"
+      "commandName": "Project"
     }
   }
 }
