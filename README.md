@@ -1,5 +1,7 @@
 # Software-development-methodologies
 
+[![.NET](https://github.com/MrSampy/Software-development-methodologies/actions/workflows/dotnet.yml/badge.svg)](https://github.com/MrSampy/Software-development-methodologies/actions/workflows/dotnet.yml)
+
 ## Lab №1 - "Quadratic Equation Solver"
 This program allows you to solve Quadratic Equation using two ways:<br />
  <b>Interactive</b>(by entering data to the console) <br />
