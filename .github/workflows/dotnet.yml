@@ -23,6 +23,7 @@ jobs:
         
     - name: Restore dependencies
       run: dotnet restore
+      working-directory: Labs/Labs.sln
     - name: Build
       run: dotnet build --no-restore
       working-directory: Labs/Labs.sln
