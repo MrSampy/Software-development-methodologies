@@ -40,7 +40,6 @@ namespace SecondLab
             {
                 throw new ArgumentOutOfRangeException();
             }
-
         } 
 
         public void Insert(T data, int index) 
@@ -131,11 +130,28 @@ namespace SecondLab
                 tempNode = tempNode.NextNode;
                 ++index;
             }
-
-
-
         }
 
+        public T Get(int index) 
+        {
+            CheckIndex(index);
+
+            var tempIndex = 0;
+            Node<T> tempNode = Head;
+            T result = Head!.Data;
+            while (tempIndex != Length)
+            {
+                if (tempIndex == index) 
+                {
+                    result = tempNode!.Data;
+                    break;
+                }
+                tempNode = tempNode.NextNode;
+                ++tempIndex;
+            }
+            return result;
+        }
+        
         public override string ToString()
         {
             var index = 0;

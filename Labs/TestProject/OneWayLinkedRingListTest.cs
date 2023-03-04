@@ -97,7 +97,6 @@ namespace TestProject
         public void TestDeleteThrowException(int index)
         {
             var list = GetTestList();
-            const int insertData = 1;
 
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.Delete(index));
         }
@@ -124,6 +123,31 @@ namespace TestProject
             Assert.AreEqual(expectedLength,actualLength);
             Assert.AreEqual(expectedListToString,actualListTostring);
 
+        }
+
+        [DataTestMethod]
+        [DataRow(0, 2)]
+        [DataRow(1, 3)]
+        [DataRow(3, 7)]
+        [DataRow(4, 10)]
+        public void TestGet(int index, int expected)
+        {
+            var list = GetTestList();
+
+            var actual = list.Get(index);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [DataTestMethod]
+        [DataRow(-1)]
+        [DataRow(6)]
+        [DataRow(5)]
+        public void TestGetThrowException(int index)
+        {
+            var list = GetTestList();
+
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.Get(index));
         }
     }
 }
