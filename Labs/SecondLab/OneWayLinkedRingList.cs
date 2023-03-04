@@ -34,14 +34,18 @@ namespace SecondLab
             ++Length;
         }
 
+        private void CheckIndex(int index) 
+        {
+            if (index >= Length || index < 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
 
+        } 
 
         public void Insert(T? data, int index) 
         {
-            if (index >= Length || index < 0) 
-            {
-                throw new ArgumentOutOfRangeException("Wrong index in Insert");
-            }
+            CheckIndex(index);
 
             if (index == Length - 1)
             {
@@ -76,6 +80,37 @@ namespace SecondLab
                 ++Length;
 
             }
+        }
+
+        public void Delete(int index) 
+        {
+            CheckIndex(index);
+
+            if (index == 0)
+            {
+                Head = Head!.NextNode;
+                Tail!.NextNode = Head;
+            }
+            else
+            {
+                var tempIndex = 0;
+                Node<T> firstNode = Tail;
+                Node<T> secondNode = Head;
+
+                while (tempIndex != Length)
+                {
+                    if (tempIndex == index)
+                    {
+                        firstNode.NextNode = secondNode.NextNode;
+                        break;
+                    }
+
+                    firstNode = firstNode.NextNode;
+                    secondNode = secondNode.NextNode;
+                    ++tempIndex;
+                }
+            }
+            --Length;
         }
 
         public override string ToString()
