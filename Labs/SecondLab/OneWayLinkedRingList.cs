@@ -19,19 +19,6 @@ namespace SecondLab
             Head = Tail = null;  
         }
 
-        public void PrintList() 
-        {
-            var index = 0;
-            Node<T> tempNode = Head;
-
-            while (index != Length) 
-            {
-                Console.WriteLine(tempNode.Data);
-                tempNode = tempNode.NextNode;
-            }
-        
-        }
-
         public void Append(T? data) 
         {
             var tempNode = new Node<T>(data);
@@ -53,10 +40,42 @@ namespace SecondLab
         {
             if (index >= Length || index < 0) 
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("Wrong index in Insert");
             }
-            
 
+            if (index == Length - 1)
+            {
+                Append(data);
+            }
+            else if (index == 0) 
+            {
+
+                var newNode = new Node<T>(data);
+                Tail.NextNode = newNode;
+                newNode.NextNode = Head;
+                Head = Tail.NextNode;
+                ++Length;
+            }
+            else
+            {
+                var tempIndex = 0;
+                var tempNode = Tail;
+                var newNode = new Node<T>(data);
+                while (tempIndex != Length)
+                {
+                    if (tempIndex == index)
+                    {
+                        newNode.NextNode = tempNode.NextNode;
+                        tempNode.NextNode = newNode;
+                        Tail!.NextNode = Head;
+                        break;
+                    }
+                    tempNode = tempNode.NextNode;
+                    ++tempIndex;
+                }
+                ++Length;
+
+            }
         }
 
         public override string ToString()
