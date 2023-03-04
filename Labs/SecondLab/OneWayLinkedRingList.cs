@@ -19,7 +19,7 @@ namespace SecondLab
             Head = Tail = null;  
         }
 
-        public void Append(T? data) 
+        public void Append(T data) 
         {
             var tempNode = new Node<T>(data);
 
@@ -43,7 +43,7 @@ namespace SecondLab
 
         } 
 
-        public void Insert(T? data, int index) 
+        public void Insert(T data, int index) 
         {
             CheckIndex(index);
 
@@ -55,7 +55,7 @@ namespace SecondLab
             {
 
                 var newNode = new Node<T>(data);
-                Tail.NextNode = newNode;
+                Tail!.NextNode = newNode;
                 newNode.NextNode = Head;
                 Head = Tail.NextNode;
                 ++Length;
@@ -69,12 +69,12 @@ namespace SecondLab
                 {
                     if (tempIndex == index)
                     {
-                        newNode.NextNode = tempNode.NextNode;
+                        newNode.NextNode = tempNode!.NextNode;
                         tempNode.NextNode = newNode;
                         Tail!.NextNode = Head;
                         break;
                     }
-                    tempNode = tempNode.NextNode;
+                    tempNode = tempNode!.NextNode;
                     ++tempIndex;
                 }
                 ++Length;
@@ -94,23 +94,46 @@ namespace SecondLab
             else
             {
                 var tempIndex = 0;
-                Node<T> firstNode = Tail;
-                Node<T> secondNode = Head;
+                Node<T> firstNode = Tail!;
+                Node<T> secondNode = Head!;
 
                 while (tempIndex != Length)
                 {
                     if (tempIndex == index)
                     {
-                        firstNode.NextNode = secondNode.NextNode;
+                        firstNode!.NextNode = secondNode!.NextNode;
                         break;
                     }
 
-                    firstNode = firstNode.NextNode;
-                    secondNode = secondNode.NextNode;
+                    firstNode = firstNode!.NextNode!;
+                    secondNode = secondNode!.NextNode!;
                     ++tempIndex;
                 }
             }
             --Length;
+        }
+
+
+        public void DeleteAll(T element) 
+        {
+            var numberOfSameElements = 0;
+            var startLength = Length;
+            var index = 0;
+            Node<T> tempNode = Head;
+            while (index != startLength)
+            {
+                if (Comparer<T>.Default.Compare(tempNode!.Data, element) == 0) 
+                {
+                    Delete(index-numberOfSameElements);
+                    numberOfSameElements++;
+                    
+                }
+                tempNode = tempNode.NextNode;
+                ++index;
+            }
+
+
+
         }
 
         public override string ToString()

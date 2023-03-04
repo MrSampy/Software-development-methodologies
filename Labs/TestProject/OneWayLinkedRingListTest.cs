@@ -101,5 +101,29 @@ namespace TestProject
 
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.Delete(index));
         }
+
+        [DataTestMethod]
+        [DataRow(1,2, "2 2 ")]
+        [DataRow(2,4, "1 1 1 1 ")]
+        [DataRow(3,6, "1 1 1 2 2 1 ")]
+        public void TestDeleteAll(int numberToDelete, int expectedLength, string expectedListToString) 
+        {
+
+            var list = new OneWayLinkedRingList<int>();
+
+            list.Append(1);
+            list.Append(1);
+            list.Append(1);
+            list.Append(2);
+            list.Append(2);
+            list.Append(1);
+            list.DeleteAll(numberToDelete);
+            var actualLength = list.Length;
+            var actualListTostring = list.ToString();
+
+            Assert.AreEqual(expectedLength,actualLength);
+            Assert.AreEqual(expectedListToString,actualListTostring);
+
+        }
     }
 }
