@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SecondLab
 {
-    public class OneWayLinkedRingList<T>
+    public class OneWayLinkedRingList<T> : IEquatable<OneWayLinkedRingList<T>>
     {
         public Node<T>? Head { get; private set; }
         public Node<T>? Tail { get; private set; }
@@ -118,7 +119,7 @@ namespace SecondLab
             var numberOfSameElements = 0;
             var startLength = Length;
             var index = 0;
-            Node<T> tempNode = Head;
+            Node<T> tempNode = Head!;
             while (index != startLength)
             {
                 if (Comparer<T>.Default.Compare(tempNode!.Data, element) == 0) 
@@ -127,7 +128,7 @@ namespace SecondLab
                     numberOfSameElements++;
                     
                 }
-                tempNode = tempNode.NextNode;
+                tempNode = tempNode.NextNode!;
                 ++index;
             }
         }
@@ -137,7 +138,7 @@ namespace SecondLab
             CheckIndex(index);
 
             var tempIndex = 0;
-            Node<T> tempNode = Head;
+            Node<T> tempNode = Head!;
             T result = Head!.Data;
             while (tempIndex != Length)
             {
@@ -146,25 +147,62 @@ namespace SecondLab
                     result = tempNode!.Data;
                     break;
                 }
-                tempNode = tempNode.NextNode;
+                tempNode = tempNode!.NextNode!;
                 ++tempIndex;
             }
             return result;
         }
-        
+
+        public OneWayLinkedRingList<T> Clone() 
+        {
+            OneWayLinkedRingList<T> result = new OneWayLinkedRingList<T>();
+
+            var index = 0;
+            Node<T> tempNode = Head!;
+            while (index != Length)
+            {
+                result.Append(tempNode.Data);
+                tempNode = tempNode.NextNode!;
+                ++index;
+            }
+
+            return result;
+        }
+
         public override string ToString()
         {
             var index = 0;
-            Node<T> tempNode = Head;
+            Node<T> tempNode = Head!;
             var stringBuilder = new StringBuilder();
             while (index != Length)
             {
                 stringBuilder.Append($"{tempNode.Data} ");
-                tempNode = tempNode.NextNode;
+                tempNode = tempNode.NextNode!;
                 ++index;
             }
             return stringBuilder.ToString();
         }
 
+        public bool Equals(OneWayLinkedRingList<T>? other)
+        {
+            if (other == null || other.Length!=this.Length) 
+            {
+                return false;
+            }
+            var index = 0;
+            Node<T> thisNode = Head!;
+            Node<T> otherNode = other.Head!;
+            while (index != Length)
+            {
+                if (Comparer<T>.Default.Compare(otherNode.Data, thisNode.Data) != 0)
+                {
+                    return false;
+                }
+                thisNode = thisNode.NextNode!;
+                otherNode = otherNode.NextNode!;
+                ++index;
+            }
+            return true;
+        }
     }
 }

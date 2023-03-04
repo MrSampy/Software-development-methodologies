@@ -149,5 +149,18 @@ namespace TestProject
 
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.Get(index));
         }
+        [TestMethod]
+        public void TestClone()
+        { 
+
+            var firstList = GetTestList();
+
+            var secondList = firstList.Clone();
+            var isEqualRefers = firstList == secondList;
+            var isEqualValues = firstList.Equals(secondList);
+
+            Assert.IsFalse(isEqualRefers);
+            Assert.IsTrue(isEqualValues);
+        }
     }
 }
