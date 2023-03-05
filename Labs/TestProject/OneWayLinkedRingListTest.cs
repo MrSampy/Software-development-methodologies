@@ -207,5 +207,17 @@ namespace TestProject
 
             Assert.AreEqual(expectedIndex, actualIndex);
         }
+
+        [TestMethod]
+        public void TestClear() 
+        {
+            var list = GetTestList();
+            const int expectedLength = 0;
+
+            list.Clear();
+
+            Assert.IsNull(list.Head);
+            Assert.AreEqual(expectedLength,list.Length);        
+        }
     }
 }

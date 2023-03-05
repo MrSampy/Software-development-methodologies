@@ -59,22 +59,31 @@ namespace SecondLab
 
             if (index == 0)
             {
-
-                while (temp.NextNode != Head)
+                if (Head == null)
                 {
-                    temp = temp.NextNode!;
+                    Head = newNode;
+                    Head.NextNode = Head;
                 }
-                newNode.NextNode = Head;
-                Head = newNode;
-                temp.NextNode = Head;
+                else 
+                {
+                    while (temp.NextNode != Head)
+                    {
+                        temp = temp.NextNode!;
+                    }
+                    newNode.NextNode = Head;
+                    Head = newNode;
+                    temp.NextNode = Head;
+                }
+
+
                 
             }
             else
             {
-                temp = Head;
+                temp = Head!;
                 for (int i = 1; i < index; i++) 
                 {
-                    temp = temp.NextNode;
+                    temp = temp.NextNode!;
                 }
                 newNode.NextNode = temp.NextNode;
                 temp.NextNode = newNode;
@@ -236,6 +245,13 @@ namespace SecondLab
             return result;
 
         }
+
+        public void Clear() 
+        {
+            Length = 0;
+            Head = null;
+        }
+
         public override string ToString()
         {
             var index = 0;
