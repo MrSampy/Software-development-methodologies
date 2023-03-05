@@ -16,6 +16,18 @@ namespace TestProject
             return list;
         }
 
+        private OneWayLinkedRingList<int> GetTestListWithSameNumbers() 
+        {
+            var list = new OneWayLinkedRingList<int>();
+            list.Append(1);
+            list.Append(1);
+            list.Append(1);
+            list.Append(2);
+            list.Append(2);
+            list.Append(1);
+            return list;
+        }
+
         [TestMethod]
         public void TestLength() 
         {
@@ -108,14 +120,8 @@ namespace TestProject
         public void TestDeleteAll(int numberToDelete, int expectedLength, string expectedListToString) 
         {
 
-            var list = new OneWayLinkedRingList<int>();
+            var list = GetTestListWithSameNumbers();
 
-            list.Append(1);
-            list.Append(1);
-            list.Append(1);
-            list.Append(2);
-            list.Append(2);
-            list.Append(1);
             list.DeleteAll(numberToDelete);
             var actualLength = list.Length;
             var actualListTostring = list.ToString();
@@ -176,6 +182,30 @@ namespace TestProject
 
             Assert.AreEqual(expectedListToString,actualListToString);
             Assert.AreEqual(expectedLength,actualLength);
+        }
+
+        [DataTestMethod]
+        [DataRow(1,0)]
+        [DataRow(2,3)]
+        public void TestFindFirst(int element, int expectedIndex)
+        {
+            var list = GetTestListWithSameNumbers();
+            
+            var actualIndex = list.FindFirst(element);
+
+            Assert.AreEqual(expectedIndex,actualIndex);
+        }
+
+        [DataTestMethod]
+        [DataRow(1, 5)]
+        [DataRow(2, 4)]
+        public void TestFindLast(int element, int expectedIndex)
+        {
+            var list = GetTestListWithSameNumbers();
+
+            var actualIndex = list.FindLast(element);
+
+            Assert.AreEqual(expectedIndex, actualIndex);
         }
     }
 }

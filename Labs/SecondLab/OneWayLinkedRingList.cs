@@ -201,6 +201,41 @@ namespace SecondLab
             }
         }
 
+        public int FindFirst(T element) 
+        {
+            var tempIndex = 0;
+            Node<T> tempNode = Head!;
+            var result = -1;
+            while (tempIndex != Length)
+            {
+                if (Comparer<T>.Default.Compare(tempNode!.Data, element) == 0)
+                {
+                    result = tempIndex;
+                    break;
+                }
+                tempNode = tempNode!.NextNode!;
+                ++tempIndex;
+            }
+            return result;
+
+        }
+        public int FindLast(T element)
+        {
+            var tempIndex = 0;
+            Node<T> tempNode = Head!;
+            var result = -1;
+            while (tempIndex != Length)
+            {
+                if (Comparer<T>.Default.Compare(tempNode!.Data, element) == 0)
+                {
+                    result = tempIndex;                    
+                }
+                tempNode = tempNode!.NextNode!;
+                ++tempIndex;
+            }
+            return result;
+
+        }
         public override string ToString()
         {
             var index = 0;
