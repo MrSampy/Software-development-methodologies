@@ -9,8 +9,12 @@ This program allows you to solve Quadratic Equation using two ways:<br />
  [Wrong Commit](https://github.com/MrSampy/Software-development-methodologies/commit/9f655150b9e9dc1ac0f7324f6ac3ea123a4237f7)<br />
  [Revert Commit](https://github.com/MrSampy/Software-development-methodologies/commit/44430e8524a44911326ef4f2c06516eabc2b8a3b)
 
-
-
+## Lab №2 - "One Way Linked Ring List"
+An application can be used to store data in an ordered list, where elements are accessed by traversing from one node to the next. Thanks to the ring structure, it is also possible to efficiently perform operations that require iterating through all elements of the list. <br />
+My number in the list: <b>8</b> <br />
+Variant: <b>8 % 4 = 0</b> <br />
+[Reference to the commit on which the tests failed](https://github.com/MrSampy/Software-development-methodologies/commit/0ff5977d36f6cb2144b98bd30932acb01e99161d)<br />
+[WorkFlow with failed tests](https://github.com/MrSampy/Software-development-methodologies/actions/runs/4335531187)<br />
 
 
 
