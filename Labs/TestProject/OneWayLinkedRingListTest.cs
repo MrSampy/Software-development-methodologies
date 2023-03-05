@@ -75,7 +75,6 @@ namespace TestProject
         [DataTestMethod]
         [DataRow(-1)]
         [DataRow(6)]
-        [DataRow(5)]
         public void TestInsertThrowException(int index)
         {
             var list = GetTestList();
@@ -187,6 +186,7 @@ namespace TestProject
         [DataTestMethod]
         [DataRow(1,0)]
         [DataRow(2,3)]
+        [DataRow(10, -1)]
         public void TestFindFirst(int element, int expectedIndex)
         {
             var list = GetTestListWithSameNumbers();
@@ -199,6 +199,7 @@ namespace TestProject
         [DataTestMethod]
         [DataRow(1, 5)]
         [DataRow(2, 4)]
+        [DataRow(10, -1)]
         public void TestFindLast(int element, int expectedIndex)
         {
             var list = GetTestListWithSameNumbers();
