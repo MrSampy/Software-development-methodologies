@@ -219,5 +219,23 @@ namespace TestProject
             Assert.IsNull(list.Head);
             Assert.AreEqual(expectedLength,list.Length);        
         }
+
+        [TestMethod]
+        public void TestExtend() 
+        {
+            var firstList = GetTestList();
+            var secondList = GetTestListWithSameNumbers();
+            const string expectedFirstListToString = "2 3 4 7 10 1 1 1 2 2 1 99 ";
+            const string expectedSecondListToString = "1 1 1 2 2 1 3 ";
+
+            firstList.Extend(secondList);
+            secondList.Append(3);
+            firstList.Append(99);
+            var actualFirstListToString = firstList.ToString();
+            var actualSecondListToString = secondList.ToString();
+
+            Assert.AreEqual(expectedFirstListToString,actualFirstListToString);
+            Assert.AreEqual(expectedSecondListToString,actualSecondListToString);
+        }
     }
 }

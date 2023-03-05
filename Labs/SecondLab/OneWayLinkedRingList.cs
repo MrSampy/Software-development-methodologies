@@ -252,6 +252,42 @@ namespace SecondLab
             Head = null;
         }
 
+        public void Extend(OneWayLinkedRingList<T> list) 
+        {
+            if (list.Head != null) 
+            {
+                var listToAdd = list.Clone();
+                if (Head == null)
+                {
+                    Head = listToAdd.Head;
+                }
+                else 
+                {
+                    Node<T> firstListNode = Head;
+                    Node<T> secondListNode = listToAdd.Head!;
+                    while (firstListNode!.NextNode != Head) 
+                    {
+                        firstListNode = firstListNode.NextNode!;
+                    }
+                    while (secondListNode.NextNode != listToAdd.Head) 
+                    {
+                        secondListNode = secondListNode.NextNode!;
+                    }
+
+                    secondListNode.NextNode = Head;
+                    firstListNode.NextNode = listToAdd.Head;
+
+                    Head = secondListNode.NextNode;
+
+                    Length += listToAdd.Length;
+                }
+            
+            
+            }
+        
+
+        }
+
         public override string ToString()
         {
             var index = 0;
@@ -287,5 +323,7 @@ namespace SecondLab
             }
             return true;
         }
+
+
     }
 }
