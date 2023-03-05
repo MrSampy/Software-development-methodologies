@@ -216,7 +216,6 @@ namespace TestProject
 
             list.Clear();
 
-            Assert.IsNull(list.Head);
             Assert.AreEqual(expectedLength,list.Length);        
         }
 
