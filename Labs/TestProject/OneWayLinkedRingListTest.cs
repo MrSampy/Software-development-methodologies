@@ -47,7 +47,7 @@ namespace TestProject
         [DataRow(0, 99, "99 2 3 4 7 10 ")]
         [DataRow(1, 1, "2 1 3 4 7 10 ")]
         [DataRow(3, 2, "2 3 4 2 7 10 ")]
-        [DataRow(4, 10, "2 3 4 7 10 10 ")]
+        [DataRow(4, 11, "2 3 4 7 11 10 ")]
         public void TestInsert(int index, int insertData, string expectedListToString)
         {
             var list = GetTestList();
@@ -161,6 +161,21 @@ namespace TestProject
 
             Assert.IsFalse(isEqualRefers);
             Assert.IsTrue(isEqualValues);
+        }
+
+        [TestMethod]
+        public void TestReverse() 
+        {
+            var list = GetTestList();
+            const string expectedListToString = "10 7 4 3 2 ";
+            const int expectedLength = 5;
+
+            list.Reverse();
+            var actualListToString = list.ToString();
+            var actualLength = list.Length;
+
+            Assert.AreEqual(expectedListToString,actualListToString);
+            Assert.AreEqual(expectedLength,actualLength);
         }
     }
 }

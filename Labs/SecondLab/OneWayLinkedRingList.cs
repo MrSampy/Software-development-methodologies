@@ -10,28 +10,35 @@ namespace SecondLab
     public class OneWayLinkedRingList<T> : IEquatable<OneWayLinkedRingList<T>>
     {
         public Node<T>? Head { get; private set; }
-        public Node<T>? Tail { get; private set; }
-
         public int Length { get; private set; }
 
         public OneWayLinkedRingList() 
         {
             Length = 0;
-            Head = Tail = null;  
+            Head = null;  
         }
 
         public void Append(T data) 
         {
-            var tempNode = new Node<T>(data);
 
+            Node<T> newNode = new Node<T>(data);
             if (Head == null)
             {
-                Head = Tail = tempNode;
+                Head = newNode;
+                newNode.NextNode = Head;
+            }
+            else
+            {
+                Node<T> temp = new Node<T>(Head.Data);
+                temp = Head;
+                while (temp!.NextNode != Head) 
+                {
+                    temp = temp.NextNode!;
+                }
+                temp.NextNode = newNode;
+                newNode.NextNode = Head;
             }
 
-            tempNode.NextNode = Head;
-            Tail!.NextNode = tempNode;
-            Tail = tempNode;
             ++Length;
         }
 
@@ -47,68 +54,70 @@ namespace SecondLab
         {
             CheckIndex(index);
 
-            if (index == Length - 1)
-            {
-                Append(data);
-            }
-            else if (index == 0) 
+            Node<T> newNode = new Node<T>(data);
+            Node<T> temp = Head!;
+
+            if (index == 0)
             {
 
-                var newNode = new Node<T>(data);
-                Tail!.NextNode = newNode;
+                while (temp.NextNode != Head)
+                {
+                    temp = temp.NextNode!;
+                }
                 newNode.NextNode = Head;
-                Head = Tail.NextNode;
-                ++Length;
+                Head = newNode;
+                temp.NextNode = Head;
+                
             }
             else
             {
-                var tempIndex = 0;
-                var tempNode = Tail;
-                var newNode = new Node<T>(data);
-                while (tempIndex != Length)
+                temp = Head;
+                for (int i = 1; i < index; i++) 
                 {
-                    if (tempIndex == index)
-                    {
-                        newNode.NextNode = tempNode!.NextNode;
-                        tempNode.NextNode = newNode;
-                        Tail!.NextNode = Head;
-                        break;
-                    }
-                    tempNode = tempNode!.NextNode;
-                    ++tempIndex;
+                    temp = temp.NextNode;
                 }
-                ++Length;
-
+                newNode.NextNode = temp.NextNode;
+                temp.NextNode = newNode;
             }
+
+            ++Length;
+
         }
 
         public void Delete(int index) 
         {
             CheckIndex(index);
 
+            Node<T> nodeToDelete = Head!;
+            Node<T> temp = Head!;
+
             if (index == 0)
             {
-                Head = Head!.NextNode;
-                Tail!.NextNode = Head;
+                if (Head!.NextNode == Head)
+                {
+                    Head = null;
+                }
+                else
+                {
+                    while (temp.NextNode != Head) 
+                    {
+                        temp = temp.NextNode!;
+                    }
+                    Head = Head.NextNode;
+                    temp.NextNode = Head;
+                    nodeToDelete = null;
+                }
             }
             else
             {
-                var tempIndex = 0;
-                Node<T> firstNode = Tail!;
-                Node<T> secondNode = Head!;
-
-                while (tempIndex != Length)
-                {
-                    if (tempIndex == index)
-                    {
-                        firstNode!.NextNode = secondNode!.NextNode;
-                        break;
-                    }
-
-                    firstNode = firstNode!.NextNode!;
-                    secondNode = secondNode!.NextNode!;
-                    ++tempIndex;
+                temp = Head!;
+                for (int i = 1; i < index; i++) 
+                {               
+                    temp = temp!.NextNode!;
                 }
+                nodeToDelete = temp.NextNode!;
+                temp.NextNode = temp.NextNode!.NextNode;
+                nodeToDelete = null;
             }
             --Length;
         }
@@ -167,6 +176,29 @@ namespace SecondLab
             }
 
             return result;
+        }
+
+        public void Reverse() 
+        {
+            if (Head != null) 
+            {
+                Node<T> prevNode = Head;
+                Node<T> tempNode = Head;
+                Node<T> curNode = Head!.NextNode!;
+
+                prevNode.NextNode = prevNode;
+
+                while (curNode != Head)
+                {
+                    tempNode = curNode!.NextNode!;
+                    curNode.NextNode = prevNode;
+                    Head.NextNode = curNode;
+                    prevNode = curNode;
+                    curNode = tempNode;
+                }
+                Head = prevNode;
+                
+            }
         }
 
         public override string ToString()
