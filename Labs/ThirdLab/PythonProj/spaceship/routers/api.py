@@ -11,7 +11,9 @@ def get_userinfo() -> dict:
         "second_name": "kolosov",
         "age": 19,
         "telegram": "MrSampy",
-        "Job": "InCore"
+        "job": "InCore",
+        "languages": ["C#", "C++", "Golang", "JS"],
+        "phoneNumber":"+380989842116"
     }
 
     return data
