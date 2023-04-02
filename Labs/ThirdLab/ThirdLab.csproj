@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ThirdLabPython\" />
+    <Compile Remove="ThirdLabPython\**" />
+    <EmbeddedResource Remove="ThirdLabPython\**" />
+    <None Remove="ThirdLabPython\**" />
   </ItemGroup>
 
 </Project>
