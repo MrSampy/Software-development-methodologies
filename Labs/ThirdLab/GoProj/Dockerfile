@@ -1,28 +1,32 @@
-# Use Golang as a base image and name it "builder" stage
+# Use the official Golang image as a builder stage
 FROM golang AS builder
 
-# Set the working directory to /app
+# Set the working directory inside the container to /app
 WORKDIR /app
 
-# Copy the go module files to the container and download the dependencies
+# Copy the go.mod and go.sum files into the container
 COPY go.mod go.sum ./
+
+# Download the Go module dependencies
 RUN go mod download
 
-# Copy the rest of the application source code to the container and build it
+# Copy the rest of the application source code into the container
 COPY . .
-RUN CGO_ENABLED=0 go build -ldflags "-w -s -extldflags '-static'" -o build/fizzbuzz
 
-# Create a new base image from scratch
-FROM scratch
+# Build the application and create a binary called fizzbuzz in the /app/build directory
+RUN go build -o build/fizzbuzz
 
-# Copy the compiled binary from the "builder" stage to the root directory of the new image
+# Use the distroless/base image as the final image
+FROM gcr.io/distroless/base
+
+# Copy the fizzbuzz binary from the builder stage into the final image
 COPY --from=builder /app/build/fizzbuzz /
 
-# Copy the index.html template to the /templates directory in the new image
+# Copy the index.html template file from the builder stage into the final image
 COPY --from=builder /app/templates/index.html /templates/
 
-# Expose port 8080
+# Expose port 8080 so that it can be accessed from outside the container
 EXPOSE 8080
 
-# Start the server by running the compiled binary and serving the application
+# Start the application by running the /fizzbuzz command with the serve argument
 CMD ["/fizzbuzz", "serve"]
