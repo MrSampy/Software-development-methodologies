@@ -356,3 +356,171 @@ docker run -p 8080:8080 --rm python-alp-test
 Результат для alpine:
 <b>Розмір: 480.87 М</br>
 Час: 1.8 s</b></br>
+
+# Проєкт на мові Go
+## Початковий образ в Docker
+Код докер файлу:
+```
+# Use an official Golang runtime as a parent image
+FROM golang:latest
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Build the Go app and output the binary to /app/build/fizzbuzz
+RUN go build -o build/fizzbuzz
+
+# Expose port 8080 for serving the app
+EXPOSE 8080
+
+# Run the command to start the app
+CMD ["./build/fizzbuzz", "serve"]
+```
+[Посилання на коміт](https://github.com/MrSampy/Software-development-methodologies/commit/8b666f5ec6455067419aabb4b8c54d95c31c1cf4)</br></br>
+Команда для збірки образу:
+```
+docker build . -t go-v1.0
+```
+![Image61](./Labs/../Images/Go/1/photo_2023-04-02_23-06-12.jpg)
+![Image62](./Labs/../Images/Go/1/photo_2023-04-02_23-06-13.jpg)
+Команда для запуску образу:
+```
+docker run -p 8080:8080 --rm go-v1.0
+```
+![Image63](./Labs/../Images/Go/1/photo_2023-04-02_23-06-15.jpg)
+![Image64](./Labs/../Images/Go/1/photo_2023-04-02_23-06-16.jpg)
+
+<b>Розмір: 870.27 М </br>
+Час: 8.6 s</br>
+Чи усі фали, що там є, потрібні для запуску проекту? Фактично, для запуску програмного застосунку потрібний лише бінарний файл.</b>
+
+## Багатоетапна збірка образу за допомогою scratch
+Код докер файлу:
+```
+# Use Golang as a base image and name it "builder" stage
+FROM golang AS builder
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the go module files to the container and download the dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the rest of the application source code to the container and build it
+COPY . .
+RUN CGO_ENABLED=0 go build -ldflags "-w -s -extldflags '-static'" -o build/fizzbuzz
+
+# Create a new base image from scratch
+FROM scratch
+
+# Copy the compiled binary from the "builder" stage to the root directory of the new image
+COPY --from=builder /app/build/fizzbuzz /
+
+# Copy the index.html template to the /templates directory in the new image
+COPY --from=builder /app/templates/index.html /templates/
+
+# Expose port 8080
+EXPOSE 8080
+
+# Start the server by running the compiled binary and serving the application
+CMD ["/fizzbuzz", "serve"]
+```
+
+Цей <i>Dockerfile</i> використовує мульти-стадійну збірку, де перша стадія (FROM golang AS builder) збирає проект та створює статично зв'язаний бінарний файл, тоді як друга стадія (FROM scratch) створює кінцевий образ, що містить лише бінарний файл та необхідні файли.
+
+Інструкція <i>WORKDIR</i> встановлює робочу директорію на /app, а <i>COPY</i> копіює вміст поточної директорії в контейнер за шляхом /app.
+
+Інструкція <i>RUN</i> збирає проект з вимкненим <i>CGO</i> та створює статично зв'язаний бінарний файл. Прапорці -w та -s використовуються для зменшення розміру бінарного файлу за рахунок відсутності відлагоджувальної інформації та таблиці символів, а прапорець `-extldflags '-static' вказує, що бінарний файл має бути статично зв'язаний.
+
+У другій стадії, інструкція <i>FROM</i> scratch вказує на базовий образ, який не містить ОС або бібліотек, тому що ми використовуємо лише статично зв'язаний бінарний файл.
+
+Інструкції <i>COPY</i> копіюють бінарний файл та HTML-шаблон з образу збірника до кінцевого образу за відповідними шляхами.
+
+Інструкція <i>EXPOSE</i> відкриває порт 8080, на якому буде працювати сервер.
+
+Інструкція <i>CMD</i> запускає команду /fizzbuzz serve при запуску контейнера, тобто запускає сервер. Команда /fizzbuzz вказує на бінарний файл, який було скомпільовано в першій стадії.
+
+[Посилання на коміт](https://github.com/MrSampy/Software-development-methodologies/commit/1b595f153836ca6a5c82987d80a23ca84ab5749d)</br></br>
+Команда для збірки образу:
+```
+docker build . -t go-scratch
+```
+![Image71](./Labs/../Images/Go/2/photo_2023-04-03_00-30-18.jpg)
+![Image72](./Labs/../Images/Go/2/photo_2023-04-03_00-30-19.jpg)
+Команда для запуску образу:
+```
+docker run -p 8080:8080 --rm go-scratch
+```
+![Image73](./Labs/../Images/Go/2/photo_2023-04-03_00-30-20.jpg)
+![Image74](./Labs/../Images/Go/2/photo_2023-04-03_00-30-21.jpg)
+
+<b>Розмір: 6.83 М(Розмір зменшився через використання пустого образу та бінарного файлу) </br>
+Час: 6.1 s(Час зменшився, бо деякі процесибули взяті з кешу)</br>
+Чи достатньо файлів для запуску нашого проекту? Якщо виконуваний файл скомпільовано статично (що означає, що всі залежності включені в нього), то також необхідно скопіювати HTML-сторінку.</br>
+Чи зручно таким образом користуватися? Я вважаю, що використання образу "scratch" може бути корисним у деяких випадках, коли необхідно створити дуже легкий Docker-образ. Однак, використання цього образу може бути незручним для більшості застосувань, оскільки потрібно вручну додавати всі необхідні файли та залежності до контейнера. Це може зайняти багато часу та зусиль, особливо для складних додатків з багатьма залежностями. Тому варто розглядати використання образу "scratch" тільки в тому випадку, якщо потрібен дуже легкий образ, і ви готові вручну додати всі необхідні файли та залежності до контейнера. В інших випадках кращим варіантом може бути використання інших образів, що вже містять необхідні залежності.
+</b>
+
+## Багатоетапна збірка образу за допомогою distorless
+Код докер файлу:
+```
+# Use the official Golang image as a builder stage
+FROM golang AS builder
+
+# Set the working directory inside the container to /app
+WORKDIR /app
+
+# Copy the go.mod and go.sum files into the container
+COPY go.mod go.sum ./
+
+# Download the Go module dependencies
+RUN go mod download
+
+# Copy the rest of the application source code into the container
+COPY . .
+
+# Build the application and create a binary called fizzbuzz in the /app/build directory
+RUN go build -o build/fizzbuzz
+
+# Use the distroless/base image as the final image
+FROM gcr.io/distroless/base
+
+# Copy the fizzbuzz binary from the builder stage into the final image
+COPY --from=builder /app/build/fizzbuzz /
+
+# Copy the index.html template file from the builder stage into the final image
+COPY --from=builder /app/templates/index.html /templates/
+
+# Expose port 8080 so that it can be accessed from outside the container
+EXPOSE 8080
+
+# Start the application by running the /fizzbuzz command with the serve argument
+CMD ["/fizzbuzz", "serve"]
+```
+[Посилання на коміт](https://github.com/MrSampy/Software-development-methodologies/commit/f23abbb2e944df45f303f664978df341a6c5f748)</br></br>
+Команда для збірки образу:
+```
+docker build . -t go-distorless
+```
+![Image81](./Labs/../Images/Go/3/photo_2023-04-03_00-30-34.jpg)
+![Image82](./Labs/../Images/Go/3/photo_2023-04-03_00-30-36.jpg)
+Команда для запуску образу:
+```
+docker run -p 8080:8080 --rm go-distorless
+```
+![Image83](./Labs/../Images/Go/3/photo_2023-04-03_00-30-37.jpg)
+![Image84](./Labs/../Images/Go/3/photo_2023-04-03_00-30-38.jpg)
+
+<b>Розмір: 870.27 М </br>
+Час: 30.34 s</b></br>
+
+Scratch та Distroless - це дві різні базові Docker-імеджі, які мають свої особливості та використовуються для різних цілей.
+
+Scratch - це найлегший можливий Docker-імедж, який важить всього декілька кілобайт. Він не містить жодних пакетів або залежностей, тому що він створений з метою забезпечення максимальної ефективності та безпеки. Scratch використовують для створення дуже малих та ефективних імеджів, але його використання потребує багато знань про конфігурацію та налаштування середовища.
+
+Distroless - це імедж, який містить лише те, що необхідно для запуску конкретного додатку, наприклад, веб-сервера. Цей імедж забезпечує безпеку та ефективність, так само як і Scratch, але він має більш простий інтерфейс, що дозволяє швидко та легко використовувати його для запуску додатків. Distroless може містити базовий набір пакетів, що необхідні для запуску додатку, таких як OpenSSL, але загалом він містить лише мінімальний набір пакетів.
+
+Отже, Scratch та Distroless мають схожу функціональність, але відрізняються своїм розміром та складністю використання. Scratch - це найлегший можливий імедж, який потребує додаткових знань для коректної конфігурації, тоді як Distroless - це більш повний імедж, який можна використовувати з мінімальними знаннями.
