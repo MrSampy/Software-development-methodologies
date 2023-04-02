@@ -1,19 +1,20 @@
-FROM python:slim-bullseye
+#Set the base image to the official Python Alpine image
+FROM python:alpine
 
+#Expose port 8080 to the outside world
 EXPOSE 8080
 
-# Set the working directory to /app
+#Set the working directory inside the container to /app
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+#Copy the requirements file into the container
+COPY requirements/backend.in .
 
-# Create a vaairtual environment and install dependencies
-RUN python -m venv ./.venv 
+#Install the required Python packages listed in backend.in
+RUN pip install --no-cache-dir -r backend.in
 
-RUN . ./.venv/bin/activate
+#Copy the entire contents of the current directory into the container
+COPY . .
 
-RUN pip install -r requirements/backend.in
-
-# Run the application when the container launches
+#Specify the command to run when the container starts up
 CMD ["uvicorn", "spaceship.main:app", "--host=0.0.0.0", "--port=8080"]
