@@ -2,3 +2,4 @@ fastapi
 pydantic
 starlette
 uvicorn[standard]
+numpy==1.24.2
