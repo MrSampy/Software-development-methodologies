@@ -1,4 +1,4 @@
-# Use the Golang builder image as a parent image
+# Use a Golang image as the build environment
 FROM golang AS builder
 
 # Set the working directory to /app
@@ -7,20 +7,20 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . .
 
-# Build the project with CGO disabled, to create a statically linked binary
-RUN CGO_ENABLED=0 go build -ldflags "-w -s -extldflags '-static'" -o build/fizzbuzz
+# Build the project
+RUN go build -o build/fizzbuzz
 
-# Use a scratch image as a base for the final image, which will not have any OS or libraries
-FROM scratch
+# Use distroless as the base image
+FROM gcr.io/distroless/base
 
-# Copy the binary from the builder image to the final image
+# Copy the binary from the builder stage
 COPY --from=builder /app/build/fizzbuzz /
 
-# Copy the HTML template from the builder image to the final image
+# Copy the templates directory from the builder stage
 COPY --from=builder /app/templates/index.html /templates/
 
-# Expose the port that the server will listen on
+# Expose port 8080
 EXPOSE 8080
 
-# Run the server when the container launches
+# Run the binary
 CMD ["/fizzbuzz", "serve"]
