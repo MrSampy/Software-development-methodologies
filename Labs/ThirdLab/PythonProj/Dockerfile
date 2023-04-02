@@ -1,5 +1,5 @@
 #Set the base image to the official Python Alpine image
-FROM python:alpine
+FROM python:slim-bullseye
 
 #Expose port 8080 to the outside world
 EXPOSE 8080
