@@ -1,3 +1,4 @@
+import numpy as np
 from fastapi import APIRouter
 
 router = APIRouter()
@@ -14,3 +15,17 @@ def get_userinfo() -> dict:
     }
 
     return data
+@router.get('/multiply')
+def multiply() -> dict:
+    first_matrix = np.random.rand(10, 10)
+    second_matrix = np.random.rand(10, 10)
+
+    result = np.dot(first_matrix, second_matrix)
+
+    result = {
+        "first_matrix": first_matrix.tolist(),
+        "second_matrix": second_matrix.tolist(),
+        "result": result.tolist()
+    }
+
+    return result
