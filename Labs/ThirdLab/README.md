@@ -558,5 +558,86 @@ docker run -it --rm -p 8888:8888 sharp-proj:1.0
 ![Image92](./Labs/../Images/CSharp/1/photo_2023-04-03_21-24-23.jpg)
 ![Image93](./Labs/../Images/CSharp/1/photo_2023-04-03_21-24-20.jpg)
 
-<b>Розмір: 215.34 М </br>
-Час: 11.6 s</b></br>
+Скопійовані файли
+![Image94](./Labs/../Images/CSharp/1/photo_2023-04-03_21-24-21.jpg)
+
+
+<b>Розмір: 749.43 М </br>
+Час: 4.7 s</b></br>
+
+## Додавання .dockerignore
+Як можна побачити в минулому, програма копіює непотрібні папки та файли, тож це вирішується додавання файлу .dockerignore
+
+Код .dockerignore файлу:
+```
+README.md 
+/PythonProj 
+/GoProj 
+/Images
+```
+
+[Посилання на коміт](https://github.com/MrSampy/Software-development-methodologies/commit/59a6f7d95a4ae2ffd3d0f514c9708c55dc58f6e5)</br></br>
+Команда для збірки образу:
+```
+docker build -t sharp-proj:2.0 .
+```
+![Image101](./Labs/../Images/CSharp/2/photo_2023-04-03_21-24-41.jpg)
+
+Команда для запуску образу:
+```
+docker run -it --rm -p 8888:8888 sharp-proj:2.0
+```
+![Image92](./Labs/../Images/CSharp/2/photo_2023-04-03_21-24-45.jpg)
+![Image94](./Labs/../Images/CSharp/2/photo_2023-04-03_21-24-42.jpg)
+
+Скопійовані файли
+![Image93](./Labs/../Images/CSharp/2/photo_2023-04-03_21-24-43.jpg)
+
+
+<b>Розмір: 747.18 М(Трішки зменшвися розмір тому, що програмі тепер треба менше копіювати) </br>
+Час: 3.9 s(Час також зменшився, бо нам треба менше копіювати)</b></br>
+
+## Оптимізація докефайлу
+Мені не дуже сподобалось, що розмір образу такий великий, тому я вирішив оптимізувати докерфайл за допомогою вже вивчених способів: alpine та багатоетапної збірки
+
+Код докер файлу:
+```
+# Build stage 
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build 
+ 
+WORKDIR /app 
+ 
+COPY . . 
+ 
+RUN dotnet restore 
+ 
+RUN dotnet publish -c Release -o out 
+ 
+# Runtime stage 
+FROM mcr.microsoft.com/dotnet/runtime:6.0-alpine AS runtime 
+ 
+WORKDIR /app 
+ 
+COPY --from=build /app/out . 
+ 
+RUN apk add curl 
+ 
+CMD ["dotnet", "ThirdLab.dll"]
+```
+
+[Посилання на коміт](https://github.com/MrSampy/Software-development-methodologies/commit/b82a9cb09f1a856cb8407c736a584e6fd0c50be1)</br></br>
+Команда для збірки образу:
+```
+docker build -t sharp-proj:3.0 .
+```
+![Image101](./Labs/../Images/CSharp/3/photo_2023-04-03_21-24-54.jpg)
+
+Команда для запуску образу:
+```
+docker run -it --rm -p 8888:8888 sharp-proj:3.0
+```
+![Image92](./Labs/../Images/CSharp/3/photo_2023-04-03_21-24-55.jpg)
+![Image94](./Labs/../Images/CSharp/3/photo_2023-04-03_21-24-56.jpg)
+
+<b>Розмір: 86.25 М(Розмір зменшився тому, що ми оптимізували код докеру) </br>
+Час: 4.5 s(Час збільшився, бо треба робити більше операцій)</b></br>
