@@ -1,13 +1,21 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build
 
 WORKDIR /app
-
-EXPOSE 8888
 
 COPY . .
 
 RUN dotnet restore
 
-RUN dotnet build -c Release
+RUN dotnet publish -c Release -o out
 
-CMD ["dotnet", "run"]
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/runtime:6.0-alpine AS runtime
+
+WORKDIR /app
+
+COPY --from=build /app/out .
+
+RUN apk add curl
+
+CMD ["dotnet", "ThirdLab.dll"]
